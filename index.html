@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Ketajaman Mata</title>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #006666;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            color: #fff;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .quiz-title {
+            font-size: 30px;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: popDown 1s ease-out forwards;
+        }
+
+        @keyframes popDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hint {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffcc;
+            text-shadow: 1px 1px 2px #000;
+            margin-top: 10px;
+        }
+
+        .question-box {
+            width: 400px;
+            height: 120px;
+            padding: 10px;
+            background: #006666;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            border-radius: 10px;
+            border: 3px solid white;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hidden-text {
+            position: relative;
+            color: rgba(255, 255, 255, 0.009);
+            font-size: 100px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            filter: blur(0px);
+            transition: color 0.5s ease;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #046868;
+            z-index: 1;
+            display: block;
+            transition: opacity 0.5s ease;
+        }
+
+        .card-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .overlay-text {
+            font-size: 40px;
+            font-weight: bold;
+            color: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease;
+        }
+
+        .progress-bar-container {
+            width: 320px;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            border: 2px solid white;
+            margin: 16px auto;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .progress-bar-left,
+        .progress-bar-right {
+            position: absolute;
+            height: 100%;
+            background-color: #fbbf24;
+            border-radius: 15px;
+            transition: width 5s ease-in-out;
+        }
+
+        .progress-bar-left {
+            left: 0;
+            width: 0;
+        }
+
+        .progress-bar-right {
+            right: 0;
+            width: 0;
+        }
+
+        #countdown {
+            font-size: 15px;
+            color: #000000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .result-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #ffffcc;
+            text-shadow: 1px 1px 2px #000;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Media Query for Responsiveness */
+        @media screen and (max-width: 600px) {
+            .quiz-title {
+                font-size: 24px;
+            }
+
+            .hint {
+                font-size: 18px;
+            }
+
+            .question-box {
+                width: 90%;
+                height: 100px;
+            }
+
+            .hidden-text {
+                font-size: 60px;
+            }
+
+            .progress-bar-container {
+                width: 90%;
+            }
+
+            .progress-bar-left,
+            .progress-bar-right {
+                height: 15px;
+            }
+
+            .result-text {
+                font-size: 18px;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+
+            .overlay-text {
+                font-size: 30px;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .quiz-title {
+                font-size: 20px;
+            }
+
+            .hint {
+                font-size: 16px;
+            }
+
+            .hidden-text {
+                font-size: 50px;
+            }
+
+            .overlay-text {
+                font-size: 24px;
+            }
+
+            .progress-bar-container {
+                width: 100%;
+            }
+
+            .progress-bar-left,
+            .progress-bar-right {
+                height: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-title">TES KETAJAMAN MATA</div>
+    <div class="hint" id="initialHint">99% Manusia Gagal</div>
+    <div class="hint" id="hintText" style="opacity: 0;">Dapatkah Anda membaca angka ini?👀</div>
+
+    <div class="question-box">
+        <div class="card-overlay" id="cardOverlay">
+            <div class="overlay-text" id="overlayText">READY!</div>
+        </div>
+        <div class="hidden-text" id="hiddenText"></div>
+    </div>
+
+    <div class="question-text" id="questionText">Berapa angka yang kamu lihat?</div>
+
+    <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-bar-left" id="progressBarLeft"></div>
+        <div class="progress-bar-right" id="progressBarRight"></div>
+        <div id="countdown" class="overlay-text"></div>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const cardOverlay = document.getElementById('cardOverlay');
+        const overlayText = document.getElementById('overlayText');
+        const hiddenText = document.getElementById('hiddenText');
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        const progressBarLeft = document.getElementById('progressBarLeft');
+        const progressBarRight = document.getElementById('progressBarRight');
+        const countdown = document.getElementById('countdown');
+        const questionText = document.getElementById('questionText');
+
+        let countdownTime = 5;
+
+        function startTest() {
+            setTimeout(() => {
+                overlayText.textContent = 'READY!';
+                overlayText.style.opacity = 1;
+
+                setTimeout(() => {
+                    overlayText.style.opacity = 0;
+                }, 3000);
+
+                setTimeout(() => {
+                    cardOverlay.classList.add('hidden');
+                    questionText.style.opacity = 1;
+
+                    setTimeout(() => {
+                        questionText.style.opacity = 0;
+                    }, 3000);
+
+                    progressBarContainer.style.opacity = 1;
+                    countdown.textContent = countdownTime;
+                    progressBarLeft.style.width = '50%';
+                    progressBarRight.style.width = '50%';
+
+                    let interval = setInterval(() => {
+                        countdownTime--;
+                        countdown.textContent = countdownTime;
+
+                        if (countdownTime <= 0) {
+                            clearInterval(interval);
+                            progressBarContainer.style.opacity = 0;
+                            hiddenText.style.color = 'rgba(255, 255, 255, 0.3)';
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 5000);
+                        }
+                    }, 1000);
+                }, 3000);
+            }, 1000);
+        }
+
+        window.onload = function () {
+            hiddenText.textContent = Math.floor(Math.random() * 9000) + 1000;
+            startTest();
+        };
+    </script>
+</body>
+</html>
